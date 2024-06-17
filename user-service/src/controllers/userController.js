@@ -1,10 +1,12 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 exports.signup = async (req, res) => {
     try {
         const { name, mobile_no, email, password } = req.body;
         const user = new User({ name, mobile_no, email, password });
+        // Validations later
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
@@ -28,7 +30,7 @@ exports.login = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.params.id;
         const updates = req.body;
         const user = await User.findByIdAndUpdate(userId, updates, { new: true });
         res.json(user);
@@ -39,7 +41,7 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.params.id;
         await User.findByIdAndDelete(userId);
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
